@@ -56,7 +56,7 @@ Sleep(1000)
 ; if 64bit system them select the 64bit Version
 if $setsystype == "x64" Then
 	;MsgBox(0, "Debug001", $setsystype)
-    While 1
+	While 1
 		
 		If WinExists("DBackup Agent", "Please select the Version to install") Then
 			If $select32bit == "yes" Then
