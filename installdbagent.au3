@@ -86,17 +86,20 @@ While 1
 	;In the Welcome Step
 	;WinWaitActive($setupWinTitle, $welcomestep)
 	If WinExists($setupWinTitle, $welcomestep) Then
+		WinActive($setupWinTitle, $welcomestep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 	
 	
 	;In the License Step
 	;WinWaitActive($setupWinTitle, $licensestep)
 	ElseIf WinExists($setupWinTitle, $licensestep) Then
+		WinActive($setupWinTitle, $licensestep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 
 	;In the Destination Folder Step
 	;WinWaitActive($setupWinTitle, $folderstep)
 	ElseIf WinExists($setupWinTitle, $folderstep) Then
+		WinActive($setupWinTitle, $folderstep)
 		if $setinstdir <> "NA" Then
 			ControlFocus($setupWinTitle, $folderstep, "RichEdit20W1")
 			ControlSend($setupWinTitle, $folderstep, "RichEdit20W1", $setinstdir)
@@ -106,12 +109,13 @@ While 1
 	;In the Input server address Step
 	;WinWaitActive($setupWinTitle, $servaddstep)
 	ElseIf WinExists($setupWinTitle, $servaddstep) Then
+		WinActive($setupWinTitle, $servaddstep)
 		if $setusehttps == "https" Then
 			ControlCommand($setupWinTitle, $servaddstep, "ComboBox1", "SelectString", "https")
 		EndIf
 		;type Dbackup Server IP Address
-		ControlSend($setupWinTitle, $servaddstep, "RichEdit20W1", $setserverip)
 		ControlFocus($setupWinTitle, $servaddstep, "RichEdit20W1")
+		ControlSend($setupWinTitle, $servaddstep, "RichEdit20W1", $setserverip)
 		; set the server port
 		if $setserverport <> "NA" Then
 			ControlFocus($setupWinTitle, $servaddstep, "RichEdit20W2")
@@ -120,19 +124,22 @@ While 1
 		ControlClick($setupWinTitle, $netstep, "Button1")
 	
 	;In the Oracle directory Step
-	WinWaitActive($setupWinTitle, $orcldirstep)
+	WinWaitActive($setupWinTitle, $orcldirstep, 1)
 	ElseIf WinExists($setupWinTitle, $orcldirstep) Then
+		WinActive($setupWinTitle, $orcldirstep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 
 	;In the Ready to install DBackup Agent Step
 	;WinWaitActive($setupWinTitle, $readinstep)
 	ElseIf WinExists($setupWinTitle, $readinstep) Then
+		WinActive($setupWinTitle, $readinstep)
 		ControlClick($setupWinTitle, $install, "Button1")
 
 	;waiting for installer complete
 	;In the Completed the DBackup Agent Setup Wizard Step
-	WinWaitActive($setupWinTitle, $finishcontects)
+	WinWaitActive($setupWinTitle, $finishcontects, 1)
 	ElseIf WinExists($setupWinTitle, $finishcontects) Then
+		WinActive($setupWinTitle, $finishcontects)
 		ControlClick($setupWinTitle, $finish, "Button1")
 		If not WinExists($setupWinTitle) Then
 			ExitLoop
