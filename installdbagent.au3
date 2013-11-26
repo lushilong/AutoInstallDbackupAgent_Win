@@ -131,6 +131,7 @@ While 1
 	ElseIf WinExists($setupWinTitle, $finishcontects) Then        ;In the Completed the DBackup Agent Setup Wizard Step
 		WinActive($setupWinTitle, $finishcontects)
 		ControlClick($setupWinTitle, $finish, "Button1")
+		Sleep(3000)
 		If not WinExists($setupWinTitle) Then
 			ExitLoop
 		EndIf
