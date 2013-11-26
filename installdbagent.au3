@@ -81,24 +81,20 @@ if $setsystype == "x64" Then
 	
 EndIf
 
+WinWaitActive($setupWinTitle, $welcomestep)
+
 While 1
 	
 	;In the Welcome Step
-	;WinWaitActive($setupWinTitle, $welcomestep)
 	If WinExists($setupWinTitle, $welcomestep) Then
 		WinActive($setupWinTitle, $welcomestep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 	
-	
-	;In the License Step
-	;WinWaitActive($setupWinTitle, $licensestep)
-	ElseIf WinExists($setupWinTitle, $licensestep) Then
+	ElseIf WinExists($setupWinTitle, $licensestep) Then        ;In the License Step
 		WinActive($setupWinTitle, $licensestep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 
-	;In the Destination Folder Step
-	;WinWaitActive($setupWinTitle, $folderstep)
-	ElseIf WinExists($setupWinTitle, $folderstep) Then
+	ElseIf WinExists($setupWinTitle, $folderstep) Then        ;In the Destination Folder Step
 		WinActive($setupWinTitle, $folderstep)
 		if $setinstdir <> "NA" Then
 			ControlFocus($setupWinTitle, $folderstep, "RichEdit20W1")
@@ -106,16 +102,17 @@ While 1
 		EndIf
 		ControlClick($setupWinTitle, $netstep, "Button1")
 
-	;In the Input server address Step
-	;WinWaitActive($setupWinTitle, $servaddstep)
-	ElseIf WinExists($setupWinTitle, $servaddstep) Then
+	ElseIf WinExists($setupWinTitle, $servaddstep) Then        ;In the Input server address Step
 		WinActive($setupWinTitle, $servaddstep)
 		if $setusehttps == "https" Then
 			ControlCommand($setupWinTitle, $servaddstep, "ComboBox1", "SelectString", "https")
 		EndIf
 		;type Dbackup Server IP Address
-		ControlFocus($setupWinTitle, $servaddstep, "RichEdit20W1")
-		ControlSend($setupWinTitle, $servaddstep, "RichEdit20W1", $setserverip)
+		$getcurrentip = ControlGetText($setupWinTitle, $servaddstep, "RichEdit20W1")
+		If $getcurrentip <> $setserverip Then
+			ControlFocus($setupWinTitle, $servaddstep, "RichEdit20W1")
+			ControlSend($setupWinTitle, $servaddstep, "RichEdit20W1", $setserverip)
+		EndIf
 		; set the server port
 		if $setserverport <> "NA" Then
 			ControlFocus($setupWinTitle, $servaddstep, "RichEdit20W2")
@@ -123,22 +120,15 @@ While 1
 		EndIf
 		ControlClick($setupWinTitle, $netstep, "Button1")
 	
-	;In the Oracle directory Step
-	WinWaitActive($setupWinTitle, $orcldirstep, 1)
-	ElseIf WinExists($setupWinTitle, $orcldirstep) Then
+	ElseIf WinExists($setupWinTitle, $orcldirstep) Then        ;In the Oracle directory Step
 		WinActive($setupWinTitle, $orcldirstep)
 		ControlClick($setupWinTitle, $netstep, "Button1")
 
-	;In the Ready to install DBackup Agent Step
-	;WinWaitActive($setupWinTitle, $readinstep)
-	ElseIf WinExists($setupWinTitle, $readinstep) Then
+	ElseIf WinExists($setupWinTitle, $readinstep) Then        ;In the Ready to install DBackup Agent Step
 		WinActive($setupWinTitle, $readinstep)
 		ControlClick($setupWinTitle, $install, "Button1")
 
-	;waiting for installer complete
-	;In the Completed the DBackup Agent Setup Wizard Step
-	WinWaitActive($setupWinTitle, $finishcontects, 1)
-	ElseIf WinExists($setupWinTitle, $finishcontects) Then
+	ElseIf WinExists($setupWinTitle, $finishcontects) Then        ;In the Completed the DBackup Agent Setup Wizard Step
 		WinActive($setupWinTitle, $finishcontects)
 		ControlClick($setupWinTitle, $finish, "Button1")
 		If not WinExists($setupWinTitle) Then
