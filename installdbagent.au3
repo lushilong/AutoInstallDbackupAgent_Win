@@ -33,21 +33,21 @@ if $setsyslang == "en_US" Then
     $finishcontects = "Completed the DBackup Agent Setup Wizard"
 	$serviper = "the server address is error"
 Else
-    $setupWinTitle = "¶¦¼×µÏ±¸¿Í»§¶Ë °²×°³ÌÐò"
-    $welcomestep = "»¶Ó­Ê¹ÓÃ ¶¦¼×µÏ±¸¿Í»§¶Ë °²×°Ïòµ¼"
-    $licensestep = "Çë×ÐÏ¸ÔÄ¶ÁÒÔÏÂÐí¿ÉÐ­Òé"
-    $folderstep = "Ä¿±êÎÄ¼þ¼Ð"
-    $servaddstep = "ÌîÐ´·þÎñÆ÷µØÖ·"
-    $selectclusterip = "Ñ¡Ôñ¼¯ÈºIP"
-    $clusteripinput = "ÇëÑ¡Ôñ¼¯Èº·þÎñIP"
-    $clusterokb = "È·¶¨"
-    $orcldirstep = "Oracle°²×°Ä¿Â¼"
-    $readinstep = "ÒÑ×¼±¸ºÃ°²×° ¶¦¼×µÏ±¸¿Í»§¶Ë"
-    $netstep = "ÏÂÒ»²½(&N) >"
-    $install = "°²×°(&I)"
-    $finish = "Íê³É(&F)"
-    $finishcontects = "ÒÑÍê³É ¶¦¼×µÏ±¸¿Í»§¶Ë °²×°Ïòµ¼"
-	$serviper = "·þÎñÆ÷µØÖ·´íÎó"
+    $setupWinTitle = "鼎甲迪备客户端 安装程序"
+    $welcomestep = "欢迎使用 鼎甲迪备客户端 安装向导"
+    $licensestep = "请仔细阅读以下许可协议"
+    $folderstep = "目标文件夹"
+    $servaddstep = "填写服务器地址"
+    $selectclusterip = "选择集群IP"
+    $clusteripinput = "请选择集群服务IP"
+    $clusterokb = "确定"
+    $orcldirstep = "Oracle安装目录"
+    $readinstep = "已准备好安装 鼎甲迪备客户端"
+    $netstep = "下一步(&N) >"
+    $install = "安装(&I)"
+    $finish = "完成(&F)"
+    $finishcontects = "已完成 鼎甲迪备客户端 安装向导"
+	$serviper = "服务器地址错误"
 EndIf
 
 $setinstdir = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "path", "NA")
@@ -72,11 +72,11 @@ if $setsystype == "x64" Then
             ControlClick("Scutech DBackup Agent Setup", "OK", "Button4")
             ExitLoop
             
-        ElseIf WinExists("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "ÇëÑ¡ÔñÒª°²×°µÄ°æ±¾") Then
+        ElseIf WinExists("鼎甲迪备客户端安装程序", "请选择要安装的版本") Then
             If $select32bit == "yes" Then
-                ControlClick("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "°²×°32Î»°æ±¾", "Button2")
+                ControlClick("鼎甲迪备客户端安装程序", "安装32位版本", "Button2")
             EndIf
-            ControlClick("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "È·¶¨", "Button4")
+            ControlClick("鼎甲迪备客户端安装程序", "确定", "Button4")
             ExitLoop
             
         Else
