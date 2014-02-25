@@ -31,21 +31,23 @@ if $setsyslang == "en_US" Then
     $install = "&Install"
     $finish = "&Finish"
     $finishcontects = "Completed the DBackup Agent Setup Wizard"
+	$serviper = "the server address is error"
 Else
-    $setupWinTitle = "鼎甲迪备客户端 安装程序"
-    $welcomestep = "欢迎使用 鼎甲迪备客户端 安装向导"
-    $licensestep = "请仔细阅读以下许可协议"
-    $folderstep = "目标文件夹"
-    $servaddstep = "填写服务器地址"
-    $selectclusterip = "选择集群IP"
-    $clusteripinput = "请选择集群服务IP"
-    $clusterokb = "确定"
-    $orcldirstep = "Oracle安装目录"
-    $readinstep = "已准备好安装 鼎甲迪备客户端"
-    $netstep = "下一步(&N) >"
-    $install = "安装(&I)"
-    $finish = "完成(&F)"
-    $finishcontects = "已完成 鼎甲迪备客户端 安装向导"
+    $setupWinTitle = "¶¦¼×µÏ±¸¿Í»§¶Ë °²×°³ÌÐò"
+    $welcomestep = "»¶Ó­Ê¹ÓÃ ¶¦¼×µÏ±¸¿Í»§¶Ë °²×°Ïòµ¼"
+    $licensestep = "Çë×ÐÏ¸ÔÄ¶ÁÒÔÏÂÐí¿ÉÐ­Òé"
+    $folderstep = "Ä¿±êÎÄ¼þ¼Ð"
+    $servaddstep = "ÌîÐ´·þÎñÆ÷µØÖ·"
+    $selectclusterip = "Ñ¡Ôñ¼¯ÈºIP"
+    $clusteripinput = "ÇëÑ¡Ôñ¼¯Èº·þÎñIP"
+    $clusterokb = "È·¶¨"
+    $orcldirstep = "Oracle°²×°Ä¿Â¼"
+    $readinstep = "ÒÑ×¼±¸ºÃ°²×° ¶¦¼×µÏ±¸¿Í»§¶Ë"
+    $netstep = "ÏÂÒ»²½(&N) >"
+    $install = "°²×°(&I)"
+    $finish = "Íê³É(&F)"
+    $finishcontects = "ÒÑÍê³É ¶¦¼×µÏ±¸¿Í»§¶Ë °²×°Ïòµ¼"
+	$serviper = "·þÎñÆ÷µØÖ·´íÎó"
 EndIf
 
 $setinstdir = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "path", "NA")
@@ -54,7 +56,6 @@ $setusehttps = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "netprotoc
 $setserverport = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "serverport", "NA")
 $select32bit = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "32bit_version", "NA")
 $inputclusterip = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "clusterip", "NA")
-$i = 0
 
 ; Run Dbackup Agent
 Run($startupFile)
@@ -64,18 +65,18 @@ if $setsystype == "x64" Then
     ;MsgBox(0, "Debug001", $setsystype)
     While 1
         
-        If WinExists("DBackup Agent", "Please select the Version to install") Then
+        If WinExists("Scutech DBackup Agent Setup", "Please select the Version to install") Then
             If $select32bit == "yes" Then
-                ControlClick("DBackup Agent", "32bit Version", "Button2")
+                ControlClick("Scutech DBackup Agent Setup", "32bit Version", "Button2")
             EndIf
-            ControlClick("DBackup Agent", "OK", "Button4")
+            ControlClick("Scutech DBackup Agent Setup", "OK", "Button4")
             ExitLoop
             
-        ElseIf WinExists("鼎甲迪备客户端安装程序", "请选择要安装的版本") Then
+        ElseIf WinExists("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "ÇëÑ¡ÔñÒª°²×°µÄ°æ±¾") Then
             If $select32bit == "yes" Then
-                ControlClick("鼎甲迪备客户端安装程序", "安装32位版本", "Button2")
+                ControlClick("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "°²×°32Î»°æ±¾", "Button2")
             EndIf
-            ControlClick("鼎甲迪备客户端安装程序", "确定", "Button4")
+            ControlClick("¶¦¼×µÏ±¸¿Í»§¶Ë°²×°³ÌÐò", "È·¶¨", "Button4")
             ExitLoop
             
         Else
@@ -89,6 +90,7 @@ EndIf
 
 WinWaitActive($setupWinTitle, $welcomestep)
 
+$i = 0 ;for cluster ip
 While 1
     
     ;In the Welcome Step
@@ -142,6 +144,9 @@ While 1
         EndIf
         
         ControlClick($setupWinTitle, $netstep, "Button1")
+		If WinExists($setupWinTitle, $serviper) Then
+			ExitLoop
+		EndIf
     
     ElseIf WinExists($setupWinTitle, $orcldirstep) Then        ;In the Oracle directory Step
         WinActive($setupWinTitle, $orcldirstep)
