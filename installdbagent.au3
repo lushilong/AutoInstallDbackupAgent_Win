@@ -32,7 +32,7 @@ if $setsyslang == "en_US" Then
     $install = "&Install"
     $finish = "&Finish"
     $finishcontects = "Completed the DBackup Agent Setup Wizard"
-	$serviper = "the server address is error"
+    $serviper = "the server address is error"
 Else
     $setupWinTitle = "鼎甲迪备客户端 安装程序"
     $welcomestep = "欢迎使用 鼎甲迪备客户端 安装向导"
@@ -48,7 +48,7 @@ Else
     $install = "安装(&I)"
     $finish = "完成(&F)"
     $finishcontects = "已完成 鼎甲迪备客户端 安装向导"
-	$serviper = "服务器地址错误"
+    $serviper = "服务器地址错误"
 EndIf
 
 $setinstdir = IniRead(@ScriptDir  & "\" & "Config.ini", "InsConfig", "path", "NA")
@@ -91,7 +91,7 @@ EndIf
 
 WinWaitActive($setupWinTitle, $welcomestep)
 If WinExists($setupWinTitle, $welcomestep) Then
-	WinActive($setupWinTitle, $welcomestep)
+    WinActive($setupWinTitle, $welcomestep)
 EndIf
 
 $i = 0 ;for cluster ip
@@ -148,9 +148,9 @@ While 1
         EndIf
         
         ControlClick($setupWinTitle, $netstep, "Button1")
-		If WinExists($setupWinTitle, $serviper) Then
-			ExitLoop
-		EndIf
+        If WinExists($setupWinTitle, $serviper) Then
+            ExitLoop
+        EndIf
     
     ElseIf WinExists($setupWinTitle, $orcldirstep) Then        ;In the Oracle directory Step
         WinActive($setupWinTitle, $orcldirstep)
