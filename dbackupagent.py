@@ -20,7 +20,7 @@ set_ftp_dir_path = cfg.get("FtpInfo", "ftp_dir_path")
 def RaisingException(someerror):
 
     print someerror + '\n'
-    ips = raw_input('Press "ENTER" to continue......')
+    raw_input('Press "ENTER" to continue......')
     sys.exit(0)
 
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     get_lang = locale.getdefaultlocale()[0]
     if get_lang == 'zh_CN':
         agentname = u'鼎甲迪备客户端'
-        standbyname = u'鼎甲迪备零丢失'
+        standbyname = u'鼎甲迪备数据同步'
     else:
         agentname = 'DBackup Agent'
         standbyname = 'Scutech DBackup Standby'
@@ -185,17 +185,18 @@ if __name__ == '__main__':
     if get_input == 0:
         sys.exit(0)
 
-    if os.path.exists('dbagentpackage'):
-        shutil.rmtree('dbagentpackage')
-    os.mkdir('dbagentpackage')
-    cfg.set("info", "syslang", get_lang)
-    cfg.set("info", "dbagentname", newest_agent)
-    cfg.set("info", "dbstandbyname", newest_standby)
-    if Is64Windows():
-        cfg.set("info", "systype", "x64")
-    else:
-        cfg.set("info", "systype", "x86")
-    cfg.write(open("Config.ini", "w"))
+    if get_input != 4:
+        if os.path.exists('dbagentpackage'):
+            shutil.rmtree('dbagentpackage')
+        os.mkdir('dbagentpackage')
+        cfg.set("info", "syslang", get_lang)
+        cfg.set("info", "dbagentname", newest_agent)
+        cfg.set("info", "dbstandbyname", newest_standby)
+        if Is64Windows():
+            cfg.set("info", "systype", "x64")
+        else:
+            cfg.set("info", "systype", "x86")
+        cfg.write(open("Config.ini", "w"))
 
     if get_input in [1,2,3]:
         DownPackage(newest_agent)
@@ -233,5 +234,8 @@ if __name__ == '__main__':
             RaisingException("DBackup Agent hasn't install !!!")
         else:
             UninstallPackage(agent_code, "DBackup Agent")
+        print
+        raw_input('Press "ENTER" to continue......')
+        sys.exit(0)
     else:
         RaisingException("Something Error")
