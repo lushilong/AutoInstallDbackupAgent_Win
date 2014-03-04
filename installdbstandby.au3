@@ -8,6 +8,7 @@
 #ce ----------------------------------------------------------------------------
 
 
+#NoTrayIcon
 ;ENVIRONMENT SETTINGS
 $setpackagedir = @ScriptDir & "\" & "dbagentpackage"
 $packagename = IniRead(@ScriptDir  & "\" & "Config.ini", "info", "dbstandbyname", "NA")
@@ -29,12 +30,12 @@ if $setsyslang == "en_US" Then
     $install = "&Install"
     $finish = "&Finish"
 Else
-	$installtitle = "鼎甲迪备零丢失 安装程序"
-	$welcomestep = "欢迎使用 鼎甲迪备零丢失 安装向导"
+	$installtitle = "鼎甲迪备数据同步 安装程序"
+	$welcomestep = "欢迎使用 鼎甲迪备数据同步 安装向导"
 	$licensestep = "请仔细阅读以下许可协议"
 	$folderstep = "目标文件夹"
-	$readinsll = "已准备好安装 鼎甲迪备零丢失"
-	$completed = "已完成 鼎甲迪备零丢失 安装向导"
+	$readinsll = "已准备好安装 鼎甲迪备数据同步"
+	$completed = "已完成 鼎甲迪备数据同步 安装向导"
 	$netstep = "下一步(&N) >"
     $install = "安装(&I)"
     $finish = "完成(&F)"
@@ -53,11 +54,11 @@ if $setsystype == "x64" Then
 			ControlClick("Scutech DBackup Standby Setup", "OK", "Button4")
 			ExitLoop
 			
-		ElseIf WinExists("鼎甲迪备零丢失安装程序", "请选择要安装的版本") Then
+		ElseIf WinExists("鼎甲迪备数据同步安装程序", "请选择要安装的版本") Then
 			If $setstantype == "yes" Then
-				ControlClick("鼎甲迪备零丢失安装程序", "安装32位版本", "Button2")
+				ControlClick("鼎甲迪备数据同步安装程序", "安装32位版本", "Button2")
 			EndIf
-			ControlClick("鼎甲迪备零丢失安装程序", "确定", "Button4")
+			ControlClick("鼎甲迪备数据同步安装程序", "确定", "Button4")
 			ExitLoop
 			
 		EndIf
@@ -66,6 +67,9 @@ EndIf
 
 
 WinWaitActive($installtitle, $welcomestep)
+If WinExists($installtitle, $welcomestep) Then
+	WinActive($installtitle, $welcomestep)
+EndIf
 
 While 1
     
