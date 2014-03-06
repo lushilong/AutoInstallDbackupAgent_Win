@@ -89,10 +89,7 @@ if $setsystype == "x64" Then
     
 EndIf
 
-WinWaitActive($setupWinTitle, $welcomestep)
-If WinExists($setupWinTitle, $welcomestep) Then
-    WinActive($setupWinTitle, $welcomestep)
-EndIf
+WinWait($setupWinTitle, $welcomestep)
 
 $i = 0 ;for cluster ip
 While 1
