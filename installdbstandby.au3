@@ -65,11 +65,7 @@ if $setsystype == "x64" Then
     WEnd
 EndIf
 
-
-WinWaitActive($installtitle, $welcomestep)
-If WinExists($installtitle, $welcomestep) Then
-    WinActive($installtitle, $welcomestep)
-EndIf
+WinWait($installtitle, $welcomestep)
 
 While 1
     
