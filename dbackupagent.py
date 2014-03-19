@@ -69,7 +69,7 @@ def GetLastVsersion(name):
                 last_version_package = i
 
     if package_version == 0:
-        RaisingException("Can not match any packages !!!")
+        return 0
     else:
         return last_version_package
 
@@ -161,12 +161,18 @@ if __name__ == '__main__':
     standby_code, standby_version = GetCodeVersion(standbyname)
     newest_agent = GetLastVsersion("agent")
     newest_standby = GetLastVsersion("standby")
-    newest_agent_version = re.findall(r'(?<=_).{11,12}?(?=\.)', newest_agent)
-    newest_standby_version = re.findall(r'(?<=_).{9,10}?(?=\.)', newest_standby)
+    if newest_agent == 0 and newest_standby == 0:
+        RaisingException("Can not match any packages !!!")
+    else:
+        newest_agent_version = (re.findall(r'(?<=_).{11,12}?(?=\.)', newest_agent))[0]
+        if newest_standby == 0:
+            newest_standby_version = 0
+        else:
+            newest_standby_version = (re.findall(r'(?<=_).{9,10}?(?=\.)', newest_standby))[0]
     print "Aready installed DBackup Agent:[%s] and DBackup Standby:[%s]" % \
         (agent_version, standby_version)
     print "Newest version is Dbackup Agent:[%s] and DBackup Standby:[%s]" % \
-        (newest_agent_version[0], newest_standby_version[0])
+        (newest_agent_version, newest_standby_version)
     print "You can do:"
     print "Press '1' --Just remove old and install newest Agent"
     print "Press '2' --Install newest Agent and Standby"
