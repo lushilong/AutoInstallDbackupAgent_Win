@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 
-import os, sys, re, locale, shutil, time
+import os, sys, re, locale, shutil
 import ConfigParser
 import _winreg
 from ftplib import FTP
@@ -60,10 +60,8 @@ def GetLastVsersion(name):
     last_version_package = ''
     for i in package_list:
         match_package = handle.match(i)
-
         if match_package != None:
             getversion = int(match_package.group(3))
-            
             if package_version < getversion:
                 package_version = getversion
                 last_version_package = i
@@ -135,6 +133,7 @@ def GetCodeVersion(proname):
     if Is64Windows() and version == 0:
         regkey = 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
         code, version = GetPackageInfo(proname, regkey)
+
     return code, version
 
 
@@ -157,6 +156,7 @@ if __name__ == '__main__':
     else:
         agentname = 'DBackup Agent'
         standbyname = 'Scutech DBackup Standby'
+
     agent_code, agent_version = GetCodeVersion(agentname)
     standby_code, standby_version = GetCodeVersion(standbyname)
     newest_agent = GetLastVsersion("agent")
@@ -169,6 +169,7 @@ if __name__ == '__main__':
             newest_standby_version = 0
         else:
             newest_standby_version = (re.findall(r'(?<=_).{9,10}?(?=\.)', newest_standby))[0]
+
     print "Aready installed DBackup Agent:[%s] and DBackup Standby:[%s]" % \
         (agent_version, standby_version)
     print "Newest version is Dbackup Agent:[%s] and DBackup Standby:[%s]" % \
@@ -188,6 +189,7 @@ if __name__ == '__main__':
                 continue
         except BaseException:
             print "Please entry a number !"
+
     if get_input == 0:
         sys.exit(0)
 
@@ -218,6 +220,7 @@ if __name__ == '__main__':
                     print "DBackup Agent install successful."
             else:
                 RaisingException("DBackup Agent install fail !!!")
+
         if get_input in [2,3]:
             DownPackage(newest_standby)
             if get_input == 2:
@@ -231,6 +234,7 @@ if __name__ == '__main__':
                     RaisingException("DBackup Standby install fail !!!")
             elif get_input == 3:
                 RaisingException("All package download successful.")
+
     elif get_input == 4:
         if standby_code == 0:
             print "DBackup Standby hasn't install !!!"
