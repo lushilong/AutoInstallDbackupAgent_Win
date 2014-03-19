@@ -77,7 +77,7 @@ def GetLastVsersion(name):
 # define function download last version of Dbackup Agent Package from Ftp
 def DownPackage(packagename):
 
-    print "Downloading %s......" % packagename
+    print "Downloading %s ..." % packagename
     downloadftp = ConnectFtp() 
     localfile = "dbagentpackage\\" + packagename
     try:
@@ -210,9 +210,9 @@ if __name__ == '__main__':
         DownPackage(newest_agent)
         if get_input in [1,2]:
             if agent_code != 0:
-                print "Uninstall Agent older version."
+                print "Uninstalling older Agent version..."
                 UninstallPackage(agent_code, "DBackup Agent")
-            print "Start to install DBackup Agent."
+            print "Start to install DBackup Agent..."
             if os.system('InstallDbAgent.exe') == 0:
                 if get_input == 1:
                     RaisingException("DBackup Agent install successful.")
@@ -221,31 +221,32 @@ if __name__ == '__main__':
             else:
                 RaisingException("DBackup Agent install fail !!!")
 
-        if get_input in [2,3]:
+        if get_input in [2,3] and newest_standby_version != 0:
             DownPackage(newest_standby)
             if get_input == 2:
                 if standby_code != 0:
-                    print "Uninstall Standby older version."
+                    print "Uninstalling older Standby version..."
                     UninstallPackage(standby_code, "DBackup Agent")
-                print "Start to install DBackup Standby."
+                print "Start to install DBackup Standby..."
                 if os.system('InstallDbStandby.exe') == 0:
                     RaisingException("DBackup Standby install successful.")
                 else:
                     RaisingException("DBackup Standby install fail !!!")
-            elif get_input == 3:
-                RaisingException("All package download successful.")
+        else:
+            RaisingException("Can not match any Standby packages !!!")
 
     elif get_input == 4:
         if standby_code == 0:
-            print "DBackup Standby hasn't install !!!"
+            print "DBackup Standby hasn't install."
         else:
             UninstallPackage(standby_code, "DBackup Standby")
         if agent_code == 0:
-            RaisingException("DBackup Agent hasn't install !!!")
+            RaisingException("DBackup Agent hasn't install.")
         else:
             UninstallPackage(agent_code, "DBackup Agent")
         print
         raw_input('Press "ENTER" to continue......')
         sys.exit(0)
+
     else:
         RaisingException("Something Error")
