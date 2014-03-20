@@ -65,13 +65,12 @@ def GetLastVsersion(name):
             if package_version < getversion:
                 package_version = getversion
                 last_version_package = i
-
+    
+    searchftp.quit()
     if package_version == 0:
         return 0
     else:
         return last_version_package
-
-    searchftp.quit()
 
 
 # define function download last version of Dbackup Agent Package from Ftp
