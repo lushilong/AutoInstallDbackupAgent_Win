@@ -38,12 +38,12 @@ def ConnectFtp():
     try:
         ftp.login(set_ftp_user_name, set_ftp_user_passwd)
     except:
-        ftp.quit()
+        ftp.close()
         RaisingException("Can not login to Ftp Server !!!")
     try:
         ftp.cwd(set_ftp_dir_path)
     except:
-        ftp.quit()
+        ftp.close()
         RaisingException("Can not open Ftp directory !!!")
 
     return ftp
@@ -66,7 +66,7 @@ def GetLastVsersion(name):
                 package_version = getversion
                 last_version_package = i
     
-    searchftp.quit()
+    searchftp.close()
     if package_version == 0:
         return 0
     else:
@@ -85,7 +85,7 @@ def DownPackage(packagename):
     except:
         RaisingException("Download %s fail !!!" % packagename)
 
-    downloadftp.quit()
+    downloadftp.close()
 
 
 # detect the Windows is whether 64-bit system
