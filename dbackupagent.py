@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 
-import os, sys, re, locale, shutil
+import os, sys, re, locale, shutil,time
 import ConfigParser
 import _winreg
 from ftplib import FTP
@@ -28,24 +28,19 @@ def RaisingException(someerror):
 def ConnectFtp():
 
     try:
-        socket.gethostbyname("www.baidu.com")
-    except:
-        RaisingException("Can not connect to internet !!!")
-    try:
         ftp = FTP(set_ftp_server_ip)
     except:
         RaisingException("Cna not connect to Ftp Server !!!")
     try:
         ftp.login(set_ftp_user_name, set_ftp_user_passwd)
     except:
-        ftp.close()
+        ftp.quit()
         RaisingException("Can not login to Ftp Server !!!")
     try:
         ftp.cwd(set_ftp_dir_path)
     except:
-        ftp.close()
+        ftp.quit()
         RaisingException("Can not open Ftp directory !!!")
-
     return ftp
 
 
@@ -65,27 +60,26 @@ def GetLastVsersion(name):
             if package_version < getversion:
                 package_version = getversion
                 last_version_package = i
-    
-    searchftp.close()
     if package_version == 0:
         return 0
     else:
         return last_version_package
+    searchftp.quit()
 
 
 # define function download last version of Dbackup Agent Package from Ftp
 def DownPackage(packagename):
 
-    print "Downloading %s ..." % packagename
+    print "Downloading " + packagename + "...",
     downloadftp = ConnectFtp() 
     localfile = "dbagentpackage\\" + packagename
     try:
         downloadftp.retrbinary('RETR ' + packagename, open(localfile, 'wb').write)
-        print "The %s download successful." % packagename
+        print "OK."
     except:
-        RaisingException("Download %s fail !!!" % packagename)
-
-    downloadftp.close()
+        RaisingException("Fail.")
+    time.sleep(1)
+    downloadftp.quit()
 
 
 # detect the Windows is whether 64-bit system
@@ -95,59 +89,52 @@ def Is64Windows():
 
 
 # define function auto get the ProductCode
-def GetPackageInfo(pname, regkey):
-    # 32-bit system or 64-bit system and 64-bit programs
-    # UnInsKey = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'
-    # 64-bit system and 32-bit programs
-    # UnInsKey = 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
-    UnInsKey = regkey
-    Key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, UnInsKey)
-    try:
-        i = 0
-        while 1:
-            KeyName = _winreg.EnumKey(Key, i)
-            i += 1
-            Subkey = _winreg.OpenKey(Key, KeyName)
-            try:
-                Value, Type = _winreg.QueryValueEx(Subkey, 'DisplayName')
-                if Value == pname:
-                    UnInsValue, UnInsType = _winreg.QueryValueEx(Subkey, 'UninstallString')
-                    ProductCode = re.findall(r'{[^}]*}', UnInsValue)
-                    ProductVersion, VersionType = _winreg.QueryValueEx(Subkey, 'DisplayVersion')
-                    return ProductCode[0], ProductVersion
-                _winreg.CloseKey(Subkey)
-            except:
-                _winreg.CloseKey(Subkey)
-    except:
-        return 0, 0                 
-    finally:
-        _winreg.CloseKey(Key)
-
-
-# define function get productcode and productversion
-def GetCodeVersion(proname):
-
+def GetPackageInfo(pname):
+    # 32-bit system or 64-bit system and 64-bit programs 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'
+    # 64-bit system and 32-bit programs 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
     regkey = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'
-    code, version = GetPackageInfo(proname, regkey)
-    if Is64Windows() and version == 0:
-        regkey = 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
-        code, version = GetPackageInfo(proname, regkey)
-
-    return code, version
+    if Is64Windows():
+        arch_keys = [_winreg.KEY_WOW64_32KEY, _winreg.KEY_WOW64_64KEY]
+    else:
+        arch_keys = {0}
+    for arch_key in arch_keys:
+        key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, regkey, 0, _winreg.KEY_ALL_ACCESS | arch_key)
+        for i in xrange(0, _winreg.QueryInfoKey(key)[0]):
+            skey_name = _winreg.EnumKey(key, i)
+            skey = _winreg.OpenKey(key, skey_name)
+            try:
+                value = _winreg.QueryValueEx(skey, 'DisplayName')[0]
+                if value == pname:
+                    uninst_str = _winreg.QueryValueEx(skey, 'UninstallString')[0]
+                    prod_code = re.findall(r'{[^}]*}', uninst_str)
+                    prod_vers = _winreg.QueryValueEx(skey, 'DisplayVersion')[0]
+                    return prod_code[0],prod_vers
+            except:
+                pass
+            finally:
+                _winreg.CloseKey(skey)
+    return 0,0
 
 
 # define function Auto Uninstall programs
 def UninstallPackage(productcode, uninname):
 
     uninstallcommend = "MsiExec.exe /X" + str(productcode) + " /quiet"
+    print "Uninstalling " + uninname + "...",
     if os.system(uninstallcommend) == 0:
-        print "%s uninstall successful." % uninname 
+        print "OK."
     else:
-        RaisingException("%s uninstall fail !!!" % uninname)
+        RaisingException("Fail.")
 
 
 if __name__ == '__main__':
 
+    print "Checking the network connection... ",
+    try:
+        socket.gethostbyname("www.baidu.com")
+        print "OK."
+    except:
+        RaisingException("Fail.")
     get_lang = locale.getdefaultlocale()[0]
     if get_lang == 'zh_CN':
         agentname = u'鼎甲迪备客户端'
@@ -155,9 +142,8 @@ if __name__ == '__main__':
     else:
         agentname = 'DBackup Agent'
         standbyname = 'Scutech DBackup Standby'
-
-    agent_code, agent_version = GetCodeVersion(agentname)
-    standby_code, standby_version = GetCodeVersion(standbyname)
+    agent_code, agent_version = GetPackageInfo(agentname)
+    standby_code, standby_version = GetPackageInfo(standbyname)
     newest_agent = GetLastVsersion("agent")
     newest_standby = GetLastVsersion("standby")
     if newest_agent == 0 and newest_standby == 0:
@@ -168,7 +154,6 @@ if __name__ == '__main__':
             newest_standby_version = 0
         else:
             newest_standby_version = (re.findall(r'(?<=_).{9,10}?(?=\.)', newest_standby))[0]
-
     print "Aready installed DBackup Agent:[%s] and DBackup Standby:[%s]" % \
         (agent_version, standby_version)
     print "Newest version is Dbackup Agent:[%s] and DBackup Standby:[%s]" % \
@@ -191,7 +176,6 @@ if __name__ == '__main__':
 
     if get_input == 0:
         sys.exit(0)
-
     if get_input != 4:
         if os.path.exists('dbagentpackage'):
             shutil.rmtree('dbagentpackage')
@@ -204,36 +188,33 @@ if __name__ == '__main__':
         else:
             cfg.set("info", "systype", "x86")
         cfg.write(open("Config.ini", "w"))
-
     if get_input in [1,2,3]:
         DownPackage(newest_agent)
         if get_input in [1,2]:
             if agent_code != 0:
-                print "Uninstalling older Agent version..."
                 UninstallPackage(agent_code, "DBackup Agent")
-            print "Start to install DBackup Agent..."
+            print "Installing DBackup Agent...",
             if os.system('InstallDbAgent.exe') == 0:
                 if get_input == 1:
-                    RaisingException("DBackup Agent install successful.")
+                    RaisingException("OK.")
                 else:
-                    print "DBackup Agent install successful."
+                    print "OK."
             else:
-                RaisingException("DBackup Agent install fail !!!")
-
+                RaisingException("Fail.")
         if get_input in [2,3] and newest_standby_version != 0:
             DownPackage(newest_standby)
             if get_input == 2:
                 if standby_code != 0:
-                    print "Uninstalling older Standby version..."
-                    UninstallPackage(standby_code, "DBackup Agent")
-                print "Start to install DBackup Standby..."
+                    UninstallPackage(standby_code, "DBackup Standby")
+                print "Install DBackup Standby...",
                 if os.system('InstallDbStandby.exe') == 0:
-                    RaisingException("DBackup Standby install successful.")
+                    RaisingException("OK.")
                 else:
-                    RaisingException("DBackup Standby install fail !!!")
+                    RaisingException("Fail.")
+            elif get_input == 3:
+                RaisingException("Packages has downloaded.")
         else:
             RaisingException("Can not match any Standby packages !!!")
-
     elif get_input == 4:
         if standby_code == 0:
             print "DBackup Standby hasn't install."
@@ -246,6 +227,5 @@ if __name__ == '__main__':
         print
         raw_input('Press "ENTER" to continue......')
         sys.exit(0)
-
     else:
         RaisingException("Something Error")
